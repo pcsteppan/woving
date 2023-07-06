@@ -1,9 +1,9 @@
 const nearley = require("nearley");
-const grammar = require("./grammar.js");
+const woving = require("./woving.js");
 const util = require('util');
 
 // Create a Parser object from our grammar.
-const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+const parser = new nearley.Parser(nearley.Grammar.fromCompiled(woving));
 
 // Parse something!
 parser.feed("/123:2/!");
