@@ -10,4 +10,4 @@ todo: add example here
 1. install nearley.js with ```npm install -g nearley```
 2. Compile the woving.ne file (which contains the grammar for the language) with ```nearleyc woving.ne -o woving.js```
 3. install node packages ```npm install```
-4. run what will become the test suite with ```node index.js```
+4. run the test suite with ```npm test```
