@@ -1,11 +1,21 @@
 function evaluate(ast) {
+    if(!ast) {
+        return '';
+    }
+
     if (Number.isInteger(ast)) {
         return ast.toString();
+    }
+
+    if (typeof ast === 'string' || ast instanceof String) {
+        return ast;
     }
 
     switch (ast.type) {
         case ("binary"):
             return repeat(evaluate(ast.left), Number(evaluate(ast.right)));
+        case ("join"):
+            return join(evaluate(ast.left), evaluate(ast.right));
         case ("step_array"):
             return stepArray(evaluate(ast.value));
         case ("postfix"):
@@ -80,6 +90,10 @@ function pointSym(value) {
     const mirroredPart = result.slice().reverse();
     result.push(valueArr[valueLen - 1]);
     return arrToStr(result.concat(mirroredPart));
+}
+
+function join(a, b) {
+    return arrToStr([a, b]);
 }
 
 function arrToStr(arr) {

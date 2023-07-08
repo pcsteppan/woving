@@ -13,15 +13,13 @@
 expression  
   -> 
     postfix 
-    {%
-      data => {console.log('expression: ', JSON.stringify(data)); return data[0]}
-    %}
+    {% id %}
 
 postfix     
   -> 
     postfix ("!" | "|") 
     {%
-      data => {console.log('postfix: ', data); return ast('postfix', data[1][0], data[0], null, null)}
+      data => ast('postfix', data[1][0], data[0], null, null)
     %}
   | binary 
     {% id %}
@@ -34,21 +32,30 @@ binary
     %} 
   | seq  
     {% id %}
-  | group  
-    {% id %}
-  | step_array 
-    {% id %}
 
 seq 		  
   ->
     ( "1" | "2" | "3" | "4" )
     {%
-      data => {console.log('n: ', data, '->', Number(data[0])); return Number(data[0])}
+      data => Number(data[0])
     %} 
-  | seq ( "1" | "2" | "3" | "4" )
+  | ( "1" | "2" | "3" | "4" ) seq # this could be a join potentially
     {%
-      data => {console.log('seq n:', data, '->', Number(data.join(""))); return Number(data.join(""))}
+      data => ast('join', null, Number(data[0]), data[1], null)
     %}
+  | groups
+    {% id %}
+
+groups 
+  ->
+    groups expression
+    {%
+      data => ast('join', null, data[0], data[1], null)
+    %}
+  | step_array 
+    {% id %}
+  | group
+    {% id %}
 
 step_array	
   -> 
