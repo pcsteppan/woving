@@ -2,7 +2,7 @@
 
 # woving
 
-*woving* is a domain specific pattern language, or notation system, for writing concise loom draft instructions. It implements features commonly found in weaving, like repetition and symmetry, into the language itself.\
+*woving* is a domain specific pattern language, or notation system, for writing concise loom draft instructions. It implements features commonly found in weaving, like repetition and symmetry, into the language itself.
 
 ## syntax and example
 
