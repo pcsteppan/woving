@@ -85,13 +85,13 @@ test('parses non-redundant nested expressions', () => {
 });
 
 test('parses real example 1', () => {
-    const parse = createParser('[2341][2:3][3:3][4:3][1:4][2341]|');
+    const parse = createParser('2341[2:3][3:3][4:3][1:4]2341|');
     const expr = evaluate(parse);
     expect(expr).toBe('234122233344411112341143211114443332221432');
 })
 
 test('parses real example 2', () => {
-    const parse = createParser('[/14//12132434/14/14/1]!');
+    const parse = createParser('/14//12132434/14/14/1!');
     const expr = evaluate(parse);
     expect(expr).toBe('12341212323434141234143214143432321214321');
 })

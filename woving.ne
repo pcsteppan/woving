@@ -71,11 +71,3 @@ group
       data => data[1]
     %}
 
-# Precedence:
-#   group
-#   step_array
-#   binary
-#   postfix
-
-# Precedence example:
-#   [/142/:2]
