@@ -1,12 +1,33 @@
 {
+  "name": "woving",
+  "version": "1.0.0",
+  "description": "Parses woving patterns. Woving is a domain specific language for generating patterns and instructions for weaving drafts.",
+  "main": "index.js",
   "dependencies": {
     "nearley": "^2.20.1"
   },
   "devDependencies": {
-    "@types/node": "^20.3.0",
     "jest": "^29.6.0"
   },
   "scripts": {
     "test": "jest"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pcsteppan/woving.git"
+  },
+  "keywords": [
+    "creative coding",
+    "loom",
+    "weaving",
+    "grammar",
+    "nearley",
+    "DSL"
+  ],
+  "author": "Patrick Steppan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pcsteppan/woving/issues"
+  },
+  "homepage": "https://github.com/pcsteppan/woving#readme"
 }
