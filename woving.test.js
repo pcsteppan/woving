@@ -1,97 +1,102 @@
 const nearley = require("nearley");
 const woving = require("./woving.js");
-const evaluate = require('./woving-evaluator.js');
+const evaluateString = require('./woving-evaluator.js');
 
 // Create a Parser object from our grammar.
 
-var createParser = (input) => new nearley.Parser(nearley.Grammar.fromCompiled(woving)).feed(input).results[0];
+const createParser = (input) => new nearley.Parser(nearley.Grammar.fromCompiled(woving)).feed(input).results[0];
+const expectEvaluationOf = (input) => {
+    const parse = createParser(input);
+    const expr = evaluateString(parse);
+    return expect(expr);
+}
 
-test('parses empty string as valid', () => {
-    const parse = createParser('');
-    const expr = evaluate(parse);
-    // expect(expr).toBe("");?
+describe('Parses symbols correctly when used in isolation.', () => {
+    test('parses single number as identity', () => {
+        expectEvaluationOf('1').toBe('1');
+    });
+
+    test('parses number sequence as identity', () => {
+        expectEvaluationOf('1234').toBe('1234');
+    });
+
+    test('parses basic repeat correctly', () => {
+        expectEvaluationOf('12:2').toBe('1212');
+    });
+
+    test('parses basic group correctly', () => {
+        expectEvaluationOf('[1234]').toBe('1234');
+    });
+
+    test('parses basic symmetry operator \'|\' usage correctly', () => {
+        expectEvaluationOf('1234|').toBe('12344321');
+    });
+
+    test('parses basic point symmetry operator \'!\' usage correctly', () => {
+        expectEvaluationOf('1234!').toBe('1234321');
+    });
+
+    test('parses step array group /.../ correctly', () => {
+        expectEvaluationOf('/414241/').toBe('43212343234321');
+    });
 });
 
-test('parses single number as identity', () => {
-    const parse = createParser('1');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1');
+describe('Precedence is correct between:', () => {
+    test('postfix and binary operators; Binary ops have greater precendence.', () => {
+        expectEvaluationOf('1:2!')
+            .toBe('111');
+    });
+
+    test('binary operators and sequences; Sequences have greater precedence.', () => {
+        expectEvaluationOf('12:2')
+            .toBe('1212');
+    });
+
+    test('groups and operators; Groups have greater precedence.', () => {
+        // group [1|] is evaluated first to be '11'
+        // then 11:2 is evaluated to 11 repeated twice, '1111'
+        expectEvaluationOf('[1|]:2')
+            .toBe('1111');
+    });
+
+    test('subgroups and groups; Subgroups have greater precedence.', () => {
+        // subgroup of [1:2] evalutes to '11'
+        // then 1:11 is evaluated to 1 repeated eleven times
+        expectEvaluationOf('[1:[1:2]]')
+            .toBe('11111111111');
+    });
 });
 
-test('parses number sequence as identity', () => {
-    const parse = createParser('1234');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234');
+describe('Real examples: ', () => {
+    test('example 1, treadling of "Stars of Bethlehem"', () => {
+        expectEvaluationOf('2341[2:3][3:3][4:3][1:4]2341|')
+            .toBe('234122233344411112341143211114443332221432');
+    });
+
+    test('example 2, threading of "Stars of Bethlehem"', () => {
+        expectEvaluationOf('/14//12132434/14/14/1!')
+            .toBe('12341212323434141234143214143432321214321');
+    });
 });
 
-test('parses basic repeat correctly', () => {
-    const parse = createParser('12:2');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1212');
-});
+describe('Handles various edge cases:', () => {
+    test('parses empty string as valid', () => {
+        expectEvaluationOf('').toBe("");
+    });
 
-test('parses basic group correctly', () => {
-    const parse = createParser('[1234]');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234');
-});
+    test('parses simple non-step step array group /.../ correctly', () => {
+        expectEvaluationOf('/11/').toBe('11');
+    });
 
-test('parses basic symmetry operator \'|\' usage correctly', () => {
-    const parse = createParser('1234|');
-    const expr = evaluate(parse);
-    expect(expr).toBe('12344321');
-});
+    test('parses multi-expressions', () => {
+        expectEvaluationOf('[1][2]').toBe('12');
+    });
 
-test('parses basic point symmetry operator \'!\' usage correctly', () => {
-    const parse = createParser('1234!');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234321');
-});
+    test('parses redundant nested expressions', () => {
+        expectEvaluationOf('[[1234]]').toBe('1234');
+    });
 
-test('parses simple non-step step array group /.../ correctly', () => {
-    const parse = createParser('/11/');
-    const expr = evaluate(parse);
-    expect(expr).toBe('11');
-});
-
-test('parses simple step array group /.../ correctly', () => {
-    const parse = createParser('/14/');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234');
-});
-
-test('parses step array group /.../ correctly', () => {
-    const parse = createParser('/414241/');
-    const expr = evaluate(parse);
-    expect(expr).toBe('43212343234321');
-});
-
-test('parses multi-expressions', () => {
-    const parse = createParser('[1][2]');
-    const expr = evaluate(parse);
-    expect(expr).toBe('12');
-});
-
-test('parses redundant nested expressions', () => {
-    const parse = createParser('[[1234]]');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234');
-});
-
-test('parses non-redundant nested expressions', () => {
-    const parse = createParser('[1[23]4]');
-    const expr = evaluate(parse);
-    expect(expr).toBe('1234');
-});
-
-test('parses real example 1', () => {
-    const parse = createParser('2341[2:3][3:3][4:3][1:4]2341|');
-    const expr = evaluate(parse);
-    expect(expr).toBe('234122233344411112341143211114443332221432');
-})
-
-test('parses real example 2', () => {
-    const parse = createParser('/14//12132434/14/14/1!');
-    const expr = evaluate(parse);
-    expect(expr).toBe('12341212323434141234143214143432321214321');
+    test('parses non-redundant nested expressions', () => {
+        expectEvaluationOf('[1[23]4]').toBe('1234');
+    });
 })
