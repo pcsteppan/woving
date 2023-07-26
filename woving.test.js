@@ -105,6 +105,10 @@ describe('Handles multi-operator expressions:', () => {
     test('parses step-array followed by number with double "!" operator', () => {
         expectEvaluationOf('/14/1!!').toBe('12341432123414321');
     });
+
+    test('parses nested groups with postfixes', () => {
+        expectEvaluationOf('[1[23]4!]').toBe('1234321');
+    });
 });
 
 describe('Handles various edge cases:', () => {

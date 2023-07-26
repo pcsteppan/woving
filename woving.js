@@ -20,8 +20,9 @@ var grammar = {
     {"name": "postfix", "symbols": ["postfix", "postfix$subexpression$1"], "postprocess": 
         data => ast('postfix', data[1][0], data[0], null, null)
             },
-    {"name": "postfix", "symbols": ["binary"], "postprocess": id},
-    {"name": "postfix", "symbols": ["postfix", {"literal":" "}, "postfix"], "postprocess":  
+    {"name": "postfix", "symbols": ["expression"], "postprocess": id},
+    {"name": "expression", "symbols": ["binary"], "postprocess": id},
+    {"name": "expression", "symbols": ["expression", {"literal":" "}, "expression"], "postprocess":  
         data => ast('join', null, data[0], data[2], null)
             },
     {"name": "binary", "symbols": ["binary", {"literal":":"}, "seq"], "postprocess": 
@@ -42,10 +43,10 @@ var grammar = {
     {"name": "seq", "symbols": ["seq$subexpression$2", "seq"], "postprocess": 
         data => ast('join', null, Number(data[0]), data[1], null)
             },
-    {"name": "seq", "symbols": ["groups"], "postprocess": id},
-    {"name": "groups", "symbols": ["groups", "postfix"], "postprocess": 
+    {"name": "seq", "symbols": ["groups", "seq"], "postprocess": 
         data => ast('join', null, data[0], data[1], null)
             },
+    {"name": "seq", "symbols": ["groups"], "postprocess": id},
     {"name": "groups", "symbols": ["step_array"], "postprocess": id},
     {"name": "groups", "symbols": ["group"], "postprocess": id},
     {"name": "step_array", "symbols": [{"literal":"/"}, "postfix", {"literal":"/"}], "postprocess": 

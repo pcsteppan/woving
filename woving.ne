@@ -16,9 +16,14 @@ postfix
     {%
       data => ast('postfix', data[1][0], data[0], null, null)
     %}
-  | binary 
+  | expression 
     {% id %}
-  | postfix " " postfix
+
+expression  
+  -> 
+    binary 
+    {% id %}
+  | expression " " expression
     {% 
       data => ast('join', null, data[0], data[2], null)
     %}
@@ -38,20 +43,20 @@ seq
     {%
       data => Number(data[0])
     %} 
-  | ( "1" | "2" | "3" | "4" ) seq # this could be a join potentially
+  | ( "1" | "2" | "3" | "4" ) seq
     {%
       data => ast('join', null, Number(data[0]), data[1], null)
+    %}
+  | groups seq
+    {%
+      data => ast('join', null, data[0], data[1], null)
     %}
   | groups
     {% id %}
 
 groups 
   ->
-    groups postfix
-    {%
-      data => ast('join', null, data[0], data[1], null)
-    %}
-  | step_array 
+    step_array 
     {% id %}
   | group
     {% id %}
