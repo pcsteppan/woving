@@ -10,6 +10,8 @@
     "jest": "^29.6.0"
   },
   "scripts": {
+    "build": "nearleyc woving.ne -o woving.js",
+    "pretest": "npm run build",
     "test": "jest"
   },
   "repository": {

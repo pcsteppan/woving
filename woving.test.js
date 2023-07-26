@@ -79,9 +79,37 @@ describe('Real examples: ', () => {
     });
 });
 
+describe('Handles "spaces" correctly:', () => {
+    test('single space', () => {
+        expectEvaluationOf('1 2:2').toBe('122');
+    });
+
+    test('multi space expression', () => {
+        expectEvaluationOf('1:4 2:4 3:4 4:4').toBe('1111222233334444');
+    });
+});
+
+describe('Handles multi-operator expressions:', () => {
+    test('parses double "!" operator', () => {
+        expectEvaluationOf('123!!').toBe('123212321');
+    });
+
+    test('parses triple "!" operator', () => {
+        expectEvaluationOf('123!!!').toBe('12321232123212321');
+    });
+
+    test('parses step-array with double "!" operator', () => {
+        expectEvaluationOf('/14/!!').toBe('1234321234321');
+    });
+
+    test('parses step-array followed by number with double "!" operator', () => {
+        expectEvaluationOf('/14/1!!').toBe('12341432123414321');
+    });
+});
+
 describe('Handles various edge cases:', () => {
     test('parses empty string as valid', () => {
-        expectEvaluationOf('').toBe("");
+        expectEvaluationOf('').toBe('');
     });
 
     test('parses simple non-step step array group /.../ correctly', () => {
