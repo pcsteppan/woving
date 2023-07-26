@@ -1,6 +1,6 @@
 {
   "name": "woving",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Parses woving patterns. Woving is a domain specific language for generating patterns and instructions for weaving drafts.",
   "main": "index.js",
   "dependencies": {
