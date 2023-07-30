@@ -69,13 +69,18 @@ describe('Precedence is correct between:', () => {
 
 describe('Real examples: ', () => {
     test('example 1, treadling of "Stars of Bethlehem"', () => {
-        expectEvaluationOf('2341[2:3][3:3][4:3][1:4]2341|')
+        expectEvaluationOf('[2341 2:3 3:3 4:3 1:4 2341]|')
             .toBe('234122233344411112341143211114443332221432');
     });
 
     test('example 2, threading of "Stars of Bethlehem"', () => {
         expectEvaluationOf('/14//12132434/14/14/1!')
             .toBe('12341212323434141234143214143432321214321');
+    });
+
+    test('example 2 symmetried twice"', () => {
+        expectEvaluationOf('[/14//12132434/14/14/1!!]')
+            .toBe('123412123234341412341432141434323212143212341212323434141234143214143432321214321');
     });
 });
 
