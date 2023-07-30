@@ -18,11 +18,11 @@
 
 **in woving**, those lengthy sequences collapse down into a conciser and clearer form, denoting repetition, symmetry, and where values move incrementally up or down:
 
-1. ```2341[2:3][3:3][4:3][1:4]2341|```
-2. ```/14//12132434/14/14/1!```
+1. ```[2341 2:3 3:3 4:3 1:4 2341]|```
+2. ```[/14/12/1324/3414/14/1]!```
 
 some transformations happening here are:
-+ ```[1:4]``` would become ```1111``` (repetition)
++ ```1:4``` would become ```1111``` (repetition)
 + ```/141/``` would become ```1234321``` (a 'step array')
 + ```123|``` would become ```123321``` (symmetry)
 + ```123!``` would become ```12321``` (odd symmetry, or 'point symmetry')
