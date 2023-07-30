@@ -33,6 +33,11 @@ function evaluate(ast) {
 
 // :
 function repeat(value, repeat) {
+    if (repeat > 100) {
+        repeat = 1;
+        console.warn('repeat value greater than 100, setting back to 1 since, well, yeah.');
+    }
+
     return (Array(repeat + 1).join(value));
 }
 

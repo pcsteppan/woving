@@ -10,23 +10,23 @@
   }
 %}
 
+expression  
+  -> 
+    expression " " expression
+    {% 
+      data => ast('join', null, data[0], data[2], null)
+    %}
+  | postfix 
+    {% id %}
+
 postfix     
   -> 
     postfix ("!" | "|") 
     {%
       data => ast('postfix', data[1][0], data[0], null, null)
     %}
-  | expression 
+  | binary 
     {% id %}
-
-expression  
-  -> 
-    binary 
-    {% id %}
-  | expression " " expression
-    {% 
-      data => ast('join', null, data[0], data[2], null)
-    %}
 
 binary      
   -> 
@@ -63,14 +63,14 @@ groups
 
 step_array	
   -> 
-    "/" postfix "/"
+    "/" expression "/"
     {%
       data => ast('step_array', null, null, null, data[1])
     %}
 
 group		    
   -> 
-    "[" postfix "]"
+    "[" expression "]"
     {%
       data => data[1]
     %}

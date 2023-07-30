@@ -78,10 +78,20 @@ describe('Real examples: ', () => {
             .toBe('12341212323434141234143214143432321214321');
     });
 
-    test('example 2 symmetried twice"', () => {
+    test('example 2 symmetried twice', () => {
         expectEvaluationOf('[/14//12132434/14/14/1!!]')
             .toBe('123412123234341412341432141434323212143212341212323434141234143214143432321214321');
     });
+
+    test('example 3, threading of "Diadem", multiple expressions in groups', () => {
+        expectEvaluationOf('[/14/:2 1232! 434! 12!]!')
+            .toBe('123412341232321434341212143434123232143214321')
+    })
+
+    test('example 4, threading of "Rings and Chains"', () => {
+        expectEvaluationOf('[/41/4! 14! /43423121/ 41214! 12]!')
+            .toBe('43214123414143432321214121412141214121412141212323434141432141234')
+    })
 });
 
 describe('Handles "spaces" correctly:', () => {
@@ -114,6 +124,11 @@ describe('Handles multi-operator expressions:', () => {
     test('parses nested groups with postfixes', () => {
         expectEvaluationOf('[1[23]4!]').toBe('1234321');
     });
+
+    test('parses step-array and postfix operators within groups correctly', () => {
+        expectEvaluationOf('[/2/ 1!]!')
+            .toBe('212');
+    })
 });
 
 describe('Handles various edge cases:', () => {
@@ -136,4 +151,8 @@ describe('Handles various edge cases:', () => {
     test('parses non-redundant nested expressions', () => {
         expectEvaluationOf('[1[23]4]').toBe('1234');
     });
+
+    test('doesn\'t break on high repeat patterns', () => {
+        expectEvaluationOf('1:111').toBe('1');
+    })
 })

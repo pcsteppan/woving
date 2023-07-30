@@ -34,3 +34,4 @@ some transformations happening here are:
 2. Compile the woving.ne file (which contains the grammar for the language) with ```nearleyc woving.ne -o woving.js```
 3. install node packages ```npm install```
 4. run the test suite with ```npm test```
+

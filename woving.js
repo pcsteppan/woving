@@ -15,16 +15,16 @@ function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
+    {"name": "expression", "symbols": ["expression", {"literal":" "}, "expression"], "postprocess":  
+        data => ast('join', null, data[0], data[2], null)
+            },
+    {"name": "expression", "symbols": ["postfix"], "postprocess": id},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"!"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"|"}]},
     {"name": "postfix", "symbols": ["postfix", "postfix$subexpression$1"], "postprocess": 
         data => ast('postfix', data[1][0], data[0], null, null)
             },
-    {"name": "postfix", "symbols": ["expression"], "postprocess": id},
-    {"name": "expression", "symbols": ["binary"], "postprocess": id},
-    {"name": "expression", "symbols": ["expression", {"literal":" "}, "expression"], "postprocess":  
-        data => ast('join', null, data[0], data[2], null)
-            },
+    {"name": "postfix", "symbols": ["binary"], "postprocess": id},
     {"name": "binary", "symbols": ["binary", {"literal":":"}, "seq"], "postprocess": 
         data => ast('binary', data[1], data[0], data[2], null)
             },
@@ -49,14 +49,14 @@ var grammar = {
     {"name": "seq", "symbols": ["groups"], "postprocess": id},
     {"name": "groups", "symbols": ["step_array"], "postprocess": id},
     {"name": "groups", "symbols": ["group"], "postprocess": id},
-    {"name": "step_array", "symbols": [{"literal":"/"}, "postfix", {"literal":"/"}], "postprocess": 
+    {"name": "step_array", "symbols": [{"literal":"/"}, "expression", {"literal":"/"}], "postprocess": 
         data => ast('step_array', null, null, null, data[1])
             },
-    {"name": "group", "symbols": [{"literal":"["}, "postfix", {"literal":"]"}], "postprocess": 
+    {"name": "group", "symbols": [{"literal":"["}, "expression", {"literal":"]"}], "postprocess": 
         data => data[1]
             }
 ]
-  , ParserStart: "postfix"
+  , ParserStart: "expression"
 }
 if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
    module.exports = grammar;
