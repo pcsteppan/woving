@@ -9,24 +9,32 @@ function id(x) { return x[0]; }
       op: op,
       left: l,
       right: r,
-      value: v
+    }
+  }
+
+  const numberAst = (number) => {
+    return {
+      type: 'number',
+      op: null,
+      left: number,
+      right: null,
     }
   }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
     {"name": "expression", "symbols": ["expression", {"literal":" "}, "expression"], "postprocess":  
-        data => ast('join', null, data[0], data[2], null)
+        data => ast('join', null, data[0], data[2])
             },
     {"name": "expression", "symbols": ["postfix"], "postprocess": id},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"!"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"|"}]},
     {"name": "postfix", "symbols": ["postfix", "postfix$subexpression$1"], "postprocess": 
-        data => ast('postfix', data[1][0], data[0], null, null)
+        data => ast('postfix', data[1][0], data[0], null)
             },
     {"name": "postfix", "symbols": ["binary"], "postprocess": id},
     {"name": "binary", "symbols": ["binary", {"literal":":"}, "seq"], "postprocess": 
-        data => ast('binary', data[1], data[0], data[2], null)
+        data => ast('binary', data[1], data[0], data[2])
             },
     {"name": "binary", "symbols": ["seq"], "postprocess": id},
     {"name": "seq$subexpression$1", "symbols": [{"literal":"1"}]},
@@ -41,16 +49,16 @@ var grammar = {
     {"name": "seq$subexpression$2", "symbols": [{"literal":"3"}]},
     {"name": "seq$subexpression$2", "symbols": [{"literal":"4"}]},
     {"name": "seq", "symbols": ["seq$subexpression$2", "seq"], "postprocess": 
-        data => ast('join', null, Number(data[0]), data[1], null)
+        data => ast('join', null, numberAst(data[0]), data[1], null)
             },
     {"name": "seq", "symbols": ["groups", "seq"], "postprocess": 
-        data => ast('join', null, data[0], data[1], null)
+        data => ast('join', null, data[0], data[1])
             },
     {"name": "seq", "symbols": ["groups"], "postprocess": id},
     {"name": "groups", "symbols": ["step_array"], "postprocess": id},
     {"name": "groups", "symbols": ["group"], "postprocess": id},
     {"name": "step_array", "symbols": [{"literal":"/"}, "expression", {"literal":"/"}], "postprocess": 
-        data => ast('step_array', null, null, null, data[1])
+        data => ast('step_array', null, data[1], null)
             },
     {"name": "group", "symbols": [{"literal":"["}, "expression", {"literal":"]"}], "postprocess": 
         data => data[1]

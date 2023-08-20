@@ -1,5 +1,5 @@
 function evaluate(ast) {
-    if(!ast) {
+    if (!ast) {
         return '';
     }
 
@@ -12,13 +12,13 @@ function evaluate(ast) {
     }
 
     switch (ast.type) {
-        case ("binary"):
+        case "binary":
             return repeat(evaluate(ast.left), Number(evaluate(ast.right)));
-        case ("join"):
+        case "join":
             return join(evaluate(ast.left), evaluate(ast.right));
-        case ("step_array"):
-            return stepArray(evaluate(ast.value));
-        case ("postfix"):
+        case "step_array":
+            return stepArray(evaluate(ast.left));
+        case "postfix":
             switch (ast.op) {
                 case ("|"):
                     return sym(evaluate(ast.left));
@@ -26,6 +26,9 @@ function evaluate(ast) {
                     return pointSym(evaluate(ast.left));
             }
             break;
+        case "number": {
+            return Number(ast.left);
+        }
         default:
             throw ("Error with: " + JSON.stringify(ast));
     }
