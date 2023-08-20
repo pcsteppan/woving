@@ -23,10 +23,12 @@ function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
-    {"name": "expression", "symbols": ["expression", {"literal":" "}, "expression"], "postprocess":  
+    {"name": "expression", "symbols": ["expression", "join", "expression"], "postprocess":  
         data => ast('join', null, data[0], data[2])
             },
     {"name": "expression", "symbols": ["postfix"], "postprocess": id},
+    {"name": "join", "symbols": [{"literal":" "}]},
+    {"name": "join", "symbols": [{"literal":"+"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"!"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"|"}]},
     {"name": "postfix", "symbols": ["postfix", "postfix$subexpression$1"], "postprocess": 

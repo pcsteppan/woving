@@ -20,12 +20,14 @@
 
 expression  
   -> 
-    expression " " expression
+    expression join expression
     {% 
       data => ast('join', null, data[0], data[2])
     %}
   | postfix 
     {% id %}
+
+join -> " " | "+"
 
 postfix     
   -> 

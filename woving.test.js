@@ -94,13 +94,21 @@ describe('Real examples: ', () => {
     })
 });
 
-describe('Handles "spaces" correctly:', () => {
+describe('Handles joins correctly:', () => {
     test('single space', () => {
         expectEvaluationOf('1 2:2').toBe('122');
     });
 
+    test('single plus', () => {
+        expectEvaluationOf('1+2:2').toBe('122');
+    });
+
     test('multi space expression', () => {
         expectEvaluationOf('1:4 2:4 3:4 4:4').toBe('1111222233334444');
+    });
+
+    test('mixed multi space expression', () => {
+        expectEvaluationOf('1:4+2:4 3:4+4:4').toBe('1111222233334444');
     });
 });
 
