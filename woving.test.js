@@ -2,6 +2,9 @@ const nearley = require("nearley");
 const woving = require("./woving.js");
 const evaluateString = require('./woving-evaluator.js');
 
+// Test configuration
+const RANDOM_TEST_ITERATIONS = 50;
+
 // Create a Parser object from our grammar.
 
 const createParser = (input) => new nearley.Parser(nearley.Grammar.fromCompiled(woving)).feed(input).results[0];
@@ -10,6 +13,12 @@ const expectEvaluationOf = (input) => {
     const expr = evaluateString(parse);
     return expect(expr);
 }
+
+const expectProbabilisticEvaluationOf = (input, regex, iterations = RANDOM_TEST_ITERATIONS) => {
+    for (let i = 0; i < iterations; i++) {
+        expectEvaluationOf(input).toMatch(regex);
+    }
+};
 
 describe('Parses symbols correctly when used in isolation.', () => {
     test('parses single number as identity', () => {
@@ -96,9 +105,60 @@ describe('Real examples: ', () => {
 
 describe('Handles ? operator correctly:', () => {
     test('parses single ? operator', () => {
-        for (let i = 0; i < 100; i++) {
-            expectEvaluationOf('1?').toMatch(/1|/);
+        expectProbabilisticEvaluationOf('1?', /^(1|)$/);
+    });
+
+    test('? operator with sequences', () => {
+        expectProbabilisticEvaluationOf('123?', /^(123|)$/);
+    });
+
+    test('? operator with groups', () => {
+        expectProbabilisticEvaluationOf('[123]?', /^(123|)$/);
+    });
+
+    test('? operator with step arrays', () => {
+        expectProbabilisticEvaluationOf('/12/?', /^(12|)$/);
+    });
+
+    test('multiple ? operators', () => {
+        expectProbabilisticEvaluationOf('1? 2?', /^(12|1|2|)$/);
+    });
+
+    test('? operator with other postfix operators', () => {
+        expectProbabilisticEvaluationOf('123?!', /^(12321|1|)$/);
+    });
+
+    test('? operator followed by ! operator', () => {
+        expectProbabilisticEvaluationOf('123!?', /^(12321|)$/);
+    });
+
+    test('? operator in complex expressions', () => {
+        expectProbabilisticEvaluationOf('[1? 2?]!', /^(121|1|2|)$/);
+    });
+
+    test('statistical distribution test', () => {
+        let keepCount = 0;
+        let dropCount = 0;
+        const iterations = 1000;
+
+        for (let i = 0; i < iterations; i++) {
+            const result = createParser('1?');
+            const evaluated = evaluateString(result);
+            if (evaluated === '1') {
+                keepCount++;
+            } else if (evaluated === '') {
+                dropCount++;
+            }
         }
+
+        // Should be roughly 50/50 distribution (allowing for 20% variance)
+        const keepRatio = keepCount / iterations;
+        expect(keepRatio).toBeGreaterThan(0.3);
+        expect(keepRatio).toBeLessThan(0.7);
+        expect(keepCount + dropCount).toBe(iterations);
+    }); test('? operator precedence with binary operators', () => {
+        // 1:2? should be (1:2)? not 1:(2?)
+        expectProbabilisticEvaluationOf('1:2?', /^(11|)$/);
     });
 });
 

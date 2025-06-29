@@ -26,6 +26,7 @@ some transformations happening here are:
 + ```/141/``` would become ```1234321``` (a 'step array')
 + ```123|``` would become ```123321``` (symmetry)
 + ```123!``` would become ```12321``` (odd symmetry, or 'point symmetry')
++ ```123?``` would become either ```123``` or ``` ``` (random keep/drop)
 
 
 ## getting set up locally

@@ -17,13 +17,14 @@ function evaluate(ast) {
         case "join":
             return join(evaluate(ast.left), evaluate(ast.right));
         case "step_array":
-            return stepArray(evaluate(ast.left));
-        case "postfix":
+            return stepArray(evaluate(ast.left)); case "postfix":
             switch (ast.op) {
                 case ("|"):
                     return sym(evaluate(ast.left));
                 case ("!"):
                     return pointSym(evaluate(ast.left));
+                case ("?"):
+                    return randomKeep(evaluate(ast.left));
             }
             break;
         case "number": {
@@ -98,6 +99,11 @@ function pointSym(value) {
     const mirroredPart = result.slice().reverse();
     result.push(valueArr[valueLen - 1]);
     return arrToStr(result.concat(mirroredPart));
+}
+
+// ?
+function randomKeep(value) {
+    return Math.random() < 0.5 ? value.toString() : '';
 }
 
 function join(a, b) {

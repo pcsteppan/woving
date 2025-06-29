@@ -31,7 +31,7 @@ join -> " " | "+"
 
 postfix     
   -> 
-    postfix ("!" | "|") 
+    postfix ("!" | "|" | "?") 
     {%
       data => ast('postfix', data[1][0], data[0], null)
     %}

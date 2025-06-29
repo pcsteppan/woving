@@ -31,6 +31,7 @@ var grammar = {
     {"name": "join", "symbols": [{"literal":"+"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"!"}]},
     {"name": "postfix$subexpression$1", "symbols": [{"literal":"|"}]},
+    {"name": "postfix$subexpression$1", "symbols": [{"literal":"?"}]},
     {"name": "postfix", "symbols": ["postfix", "postfix$subexpression$1"], "postprocess": 
         data => ast('postfix', data[1][0], data[0], null)
             },
