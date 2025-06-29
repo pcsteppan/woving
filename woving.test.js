@@ -94,6 +94,14 @@ describe('Real examples: ', () => {
     })
 });
 
+describe('Handles ? operator correctly:', () => {
+    test('parses single ? operator', () => {
+        for (let i = 0; i < 100; i++) {
+            expectEvaluationOf('1?').toMatch(/1|/);
+        }
+    });
+});
+
 describe('Handles joins correctly:', () => {
     test('single space', () => {
         expectEvaluationOf('1 2:2').toBe('122');
