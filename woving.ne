@@ -49,13 +49,20 @@ binary
 
 seq 		  
   ->
-    ( "1" | "2" | "3" | "4" )
+    ( "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f" )
     {%
-      data => Number(data[0])
+      data => {
+        const char = data[0][0]; // data[0] is the array from the subexpression, [0] gets the actual string
+        // Convert hex characters to their numeric values for internal use, but return the character
+        if (char >= 'a' && char <= 'f') {
+          return char;
+        }
+        return Number(char);
+      }
     %} 
-  | ( "1" | "2" | "3" | "4" ) seq
+  | ( "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f" ) seq
     {%
-      data => ast('join', null, numberAst(data[0]), data[1], null)
+      data => ast('join', null, numberAst(data[0][0]), data[1], null)
     %}
   | groups seq
     {%

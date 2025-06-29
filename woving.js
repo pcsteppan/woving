@@ -44,15 +44,44 @@ var grammar = {
     {"name": "seq$subexpression$1", "symbols": [{"literal":"2"}]},
     {"name": "seq$subexpression$1", "symbols": [{"literal":"3"}]},
     {"name": "seq$subexpression$1", "symbols": [{"literal":"4"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"5"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"6"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"7"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"8"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"9"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"a"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"b"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"c"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"d"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"e"}]},
+    {"name": "seq$subexpression$1", "symbols": [{"literal":"f"}]},
     {"name": "seq", "symbols": ["seq$subexpression$1"], "postprocess": 
-        data => Number(data[0])
+        data => {
+          const char = data[0][0]; // data[0] is the array from the subexpression, [0] gets the actual string
+          // Convert hex characters to their numeric values for internal use, but return the character
+          if (char >= 'a' && char <= 'f') {
+            return char;
+          }
+          return Number(char);
+        }
             },
     {"name": "seq$subexpression$2", "symbols": [{"literal":"1"}]},
     {"name": "seq$subexpression$2", "symbols": [{"literal":"2"}]},
     {"name": "seq$subexpression$2", "symbols": [{"literal":"3"}]},
     {"name": "seq$subexpression$2", "symbols": [{"literal":"4"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"5"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"6"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"7"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"8"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"9"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"a"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"b"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"c"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"d"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"e"}]},
+    {"name": "seq$subexpression$2", "symbols": [{"literal":"f"}]},
     {"name": "seq", "symbols": ["seq$subexpression$2", "seq"], "postprocess": 
-        data => ast('join', null, numberAst(data[0]), data[1], null)
+        data => ast('join', null, numberAst(data[0][0]), data[1], null)
             },
     {"name": "seq", "symbols": ["groups", "seq"], "postprocess": 
         data => ast('join', null, data[0], data[1])

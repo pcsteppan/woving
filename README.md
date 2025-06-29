@@ -26,8 +26,10 @@ some transformations happening here are:
 + ```/141/``` would become ```1234321``` (a 'step array')
 + ```123|``` would become ```123321``` (symmetry)
 + ```123!``` would become ```12321``` (odd symmetry, or 'point symmetry')
-+ ```123?``` would become either ```123``` or ``` ``` (random keep/drop)
 
+**some other notables**, we have a probabilistic operator for some variation in our patterns 
++ ```1?``` would become either ```1``` or nothing ``` ``` (random keep/drop)
++ ```/8caf/``` becomes ```89abcbabcdef``` since hex is supported
 
 ## getting set up locally
 

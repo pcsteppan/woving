@@ -66,13 +66,11 @@ describe('Precedence is correct between:', () => {
         // then 11:2 is evaluated to 11 repeated twice, '1111'
         expectEvaluationOf('[1|]:2')
             .toBe('1111');
-    });
-
-    test('subgroups and groups; Subgroups have greater precedence.', () => {
-        // subgroup of [1:2] evalutes to '11'
-        // then 1:11 is evaluated to 1 repeated eleven times
+    }); test('subgroups and groups; Subgroups have greater precedence.', () => {
+        // subgroup of [1:2] evalutes to '11' 
+        // then 1:11 is evaluated to 1 repeated 0x11 (17 in decimal) times
         expectEvaluationOf('[1:[1:2]]')
-            .toBe('11111111111');
+            .toBe('11111111111111111');
     });
 });
 
@@ -235,9 +233,9 @@ describe('Handles various edge cases:', () => {
 
 describe('Error handling and malformed input:', () => {
     test('throws error for invalid numbers', () => {
-        expect(() => createParser('5')).toThrow();
-        expect(() => createParser('0')).toThrow();
-        expect(() => createParser('9')).toThrow();
+        expect(() => createParser('0')).toThrow(); // 0 is still invalid
+        expect(() => createParser('g')).toThrow(); // g is invalid (beyond f)
+        expect(() => createParser('z')).toThrow(); // z is invalid
     });
 
     test('throws error for mismatched brackets', () => {
@@ -375,5 +373,71 @@ describe('Performance and stress tests:', () => {
         expectEvaluationOf('1234123412341234').toBe('1234123412341234');
         // Fixed expectation for step array behavior
         expectEvaluationOf('/1234123412341234/').toBe('1234321234321234321234');
+    });
+});
+
+describe('Hex digit support:', () => {
+    test('parses hex digits 5-9', () => {
+        expectEvaluationOf('5').toBe('5');
+        expectEvaluationOf('6').toBe('6');
+        expectEvaluationOf('7').toBe('7');
+        expectEvaluationOf('8').toBe('8');
+        expectEvaluationOf('9').toBe('9');
+    });
+
+    test('parses hex letters a-f', () => {
+        expectEvaluationOf('a').toBe('a');
+        expectEvaluationOf('b').toBe('b');
+        expectEvaluationOf('c').toBe('c');
+        expectEvaluationOf('d').toBe('d');
+        expectEvaluationOf('e').toBe('e');
+        expectEvaluationOf('f').toBe('f');
+    });
+
+    test('parses hex sequences', () => {
+        expectEvaluationOf('5a').toBe('5a');
+        expectEvaluationOf('abc').toBe('abc');
+        expectEvaluationOf('9ef').toBe('9ef');
+        expectEvaluationOf('123456789abcdef').toBe('123456789abcdef');
+    });
+
+    test('hex step arrays work correctly', () => {
+        expectEvaluationOf('/5a/').toBe('56789a');
+        expectEvaluationOf('/af/').toBe('abcdef');
+        expectEvaluationOf('/a1/').toBe('a987654321');
+        expectEvaluationOf('/19a/').toBe('123456789a');
+    });
+
+    test('hex repeat operations work correctly', () => {
+        expectEvaluationOf('5:a').toBe('5555555555'); // 5 repeated 10 times (a = 10)
+        expectEvaluationOf('a:5').toBe('aaaaa'); // a repeated 5 times
+        expectEvaluationOf('7:c').toBe('777777777777'); // 7 repeated 12 times (c = 12)
+    });
+
+    test('hex with symmetry operators', () => {
+        expectEvaluationOf('5a|').toBe('5aa5');
+        expectEvaluationOf('abc|').toBe('abccba');
+        expectEvaluationOf('5a!').toBe('5a5');
+        expectEvaluationOf('abc!').toBe('abcba');
+    });
+
+    test('hex with random operator', () => {
+        expectProbabilisticEvaluationOf('5?', /^(5|)$/);
+        expectProbabilisticEvaluationOf('a?', /^(a|)$/);
+        expectProbabilisticEvaluationOf('abc?', /^(abc|)$/);
+    }); test('mixed hex and traditional digits', () => {
+        expectEvaluationOf('123abc').toBe('123abc');
+        expectEvaluationOf('/14af/').toBe('123456789abcdef'); // Fixed: step array fills the gaps
+        expectEvaluationOf('[1a 2b]!').toBe('1a2b2a1');
+    }); test('complex hex expressions', () => {
+        expectEvaluationOf('[a:2 /5a/ b!]:2').toBe('aa56789abaa56789ab');
+        expectEvaluationOf('/[ab]! [cd]!/').toBe('ababcdc'); // Fixed: step array result
+    });
+
+    test('hex step arrays with edge cases', () => {
+        expectEvaluationOf('/f1/').toBe('fedcba987654321');
+        expectEvaluationOf('/1f/').toBe('123456789abcdef');
+        expectEvaluationOf('/a5/').toBe('a98765');
+        expectEvaluationOf('/5f/').toBe('56789abcdef');
     });
 });
